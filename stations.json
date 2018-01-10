@@ -1,0 +1,102 @@
+{
+      "type": "Feature",
+      "properties": {
+        "X": 4.819179518436805,
+        "Y": 45.740538315203914,
+        "idstation": 2005,
+        "station_nu": 2005,
+        "nom": "Confluence Hôtel de Région",
+        "adresse1": "101, Cours Charlemagne",
+        "adresse2": null,
+        "commune": "Lyon 2 ème",
+        "BORNES": 32,
+        "born_verif": -8,
+        "capacite": "32.00000",
+        "xcoord": 4.819179518436805,
+        "ycoord": 45.740538315203914
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          4.819179518436805,
+          45.740538315203914
+        ]
+      }
+    },
+{
+      "type": "Feature",
+      "properties": {
+        "X": 4.870831654768776,
+        "Y": 45.72471626550501,
+        "idstation": 8041,
+        "station_nu": 8041,
+        "nom": "Etats-Unis / Viviani",
+        "adresse1": "170 boulevard des Etats-Unis angle avenue Viviani dir. vénissieux",
+        "adresse2": null,
+        "commune": "Lyon 8 ème",
+        "BORNES": 20,
+        "born_verif": -8,
+        "capacite": "20.00000",
+        "xcoord": 4.870831654768776,
+        "ycoord": 45.72471626550501
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          4.870831654768776,
+          45.72471626550501
+        ]
+      }
+    },
+{
+      "type": "Feature",
+      "properties": {
+        "X": 4.868206545176992,
+        "Y": 45.74084726438675,
+        "idstation": 8054,
+        "station_nu": 8054,
+        "nom": "Martinière Monplaisir",
+        "adresse1": "3, Rue Antoine Lumière",
+        "adresse2": null,
+        "commune": "Lyon 8 ème",
+        "BORNES": 20,
+        "born_verif": -8,
+        "capacite": "20.00000",
+        "xcoord": 4.868206545176992,
+        "ycoord": 45.74084726438675
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          4.868206545176992,
+          45.74084726438675
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "X": 4.82786796632831,
+        "Y": 45.7358559895011,
+        "idstation": 7007,
+        "station_nu": 7007,
+        "nom": "Farge / Ayasse",
+        "adresse1": null,
+        "adresse2": null,
+        "commune": null,
+        "BORNES": 20,
+        "born_verif": null,
+        "capacite": "20.00000",
+        "xcoord": 4.82787,
+        "ycoord": 45.73586
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          4.82786796632831,
+          45.7358559895011
+        ]
+      }
+    }
+  ]
+}

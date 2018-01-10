@@ -1,12 +1,12 @@
 <!--
+	This current page refers to
 	VeloViz-V6-20180110-stable
 	http://blockbuilder.org/keikhcheung/4db1794dc57f8f41ac56b8a2f45dadfb
-	is the latest stable version.
 
-	This current page refers to
+	The latest version (unstable) is 
 	VeloViz-V7-20180110-Somalia
 	http://blockbuilder.org/keikhcheung/d553f0ee45dbcb0906067460a8f55a45
-	which contains problem of transforming coordates stored in var coordonnees for L.polyline (lines 257-317)
+	which contains problem of transforming coordates stored in var coordonnees for L.polyline (lines 257-319)
 	whilst the coordinates stored in var coordonnees seem to be visualised in Somalia instead of France.
 -->
 
@@ -254,6 +254,7 @@
 
 				//console.log(coordonnees)
 
+				/* DISABLE FOR SHOWING VELOV STATION DETAILS ON HOVERING IN INFOBOX
 				// Attempt L.polyline with a single point -- OK but in Somalia…
 				var polyline = L.polyline([
 					[4.920604, 45.760813],
@@ -281,6 +282,7 @@
 												 ).addTo(leafletMap);
 					}
 				//)
+				*/
 
 				/* Failed attempt
 				var polyline = L.polyline([

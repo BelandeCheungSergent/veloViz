@@ -99,7 +99,7 @@
 		var journey_data = [];
 
 		//loading file with journeys
-		d3.json("journeys.json", function(error, journeys){
+		d3.json("https://raw.githubusercontent.com/BelandeCheungSergent/veloViz/5ceee4857d039b92907e6ad0dea0ce06a4383967/journeys.json", function(error, journeys){
 			// console.log(journeys[1002]); // station d'origine
 			// console.log(journeys[1001][0].station_in); // station de destination
 			// console.log(journeys[1001][0].nb_journeys_vectorised); //nbre de trajets   
@@ -108,7 +108,7 @@
 			color.domain([0, 200]); // TO-BE-ADJUSTED!!!!!
 
 			//loading GeoJson file using D3
-			d3.json("stations.json", function(error, stations) {
+			d3.json("https://raw.githubusercontent.com/BelandeCheungSergent/veloViz/5ceee4857d039b92907e6ad0dea0ce06a4383967/stations.json", function(error, stations) {
 			// console.log(stations.features[1].properties.idstation); //id de station
 				if (error) throw error;
 				 

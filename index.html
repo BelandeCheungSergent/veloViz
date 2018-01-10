@@ -6,7 +6,7 @@
 	This current page refers to
 	VeloViz-V7-20180110-Somalia
 	http://blockbuilder.org/keikhcheung/d553f0ee45dbcb0906067460a8f55a45
-	which contains problem of transforming coordates stored in var coordonnees for L.polyline (lines 258-301)
+	which contains problem of transforming coordates stored in var coordonnees for L.polyline (lines 257-317)
 	whilst the coordinates stored in var coordonnees seem to be visualised in Somalia instead of France.
 -->
 
@@ -14,7 +14,7 @@
 <html>
 
 <head>
-	<title>VeloViz</title>
+	<title>Many many many Points with D3 and leaflet</title>
 	<meta charset="utf-8">
 
 	<style>
@@ -99,7 +99,7 @@
 		var journey_data = [];
 
 		//loading file with journeys
-		d3.json("https://raw.githubusercontent.com/BelandeCheungSergent/veloViz/5ceee4857d039b92907e6ad0dea0ce06a4383967/journeys.json", function(error, journeys){
+		d3.json("journeys.json", function(error, journeys){
 			// console.log(journeys[1002]); // station d'origine
 			// console.log(journeys[1001][0].station_in); // station de destination
 			// console.log(journeys[1001][0].nb_journeys_vectorised); //nbre de trajets   
@@ -108,7 +108,7 @@
 			color.domain([0, 200]); // TO-BE-ADJUSTED!!!!!
 
 			//loading GeoJson file using D3
-			d3.json("https://raw.githubusercontent.com/BelandeCheungSergent/veloViz/master/stations.json", function(error, stations) {
+			d3.json("stations.json", function(error, stations) {
 			// console.log(stations.features[1].properties.idstation); //id de station
 				if (error) throw error;
 				 
@@ -180,8 +180,7 @@
 				
 				//add choice base tiles - background map of Lyon
 				L.tileLayer('http://{s}.tile.stamen.com/toner-lite/{z}/{x}/{y}.png').addTo(leafletMap);
-				
-			
+
 				
 				//adds an SVG element to Leaflet’s overlay pane
 				var svg = d3.select(leafletMap.getPanes().overlayPane).append("svg");
@@ -255,16 +254,33 @@
 
 				//console.log(coordonnees)
 
+				// Attempt L.polyline with a single point -- OK but in Somalia…
+				var polyline = L.polyline([
+					[4.920604, 45.760813],
+					[4.832162, 45.767646]
+					]).addTo(leafletMap);
+				
 				// Attempt L.polyline
-				var polyline = L.polyline(
-					function() {
-						for (var i = 0; i < coordonnees.length; i++) {
-							console.log('[' + coordonnees[i].value.X + ', ' + coordonnees[i].value.Y + '], ')
-							// console.log(return '[' + coordonnees[i].X + ', ' + coordonnees[i].Y + '], ';)
+				// var polyline = L.polyline(
+					for (key in coordonnees) {
+						var coordinates = Object.values(coordonnees[key]);
+						// console.log(coordinates) -- OK
+						// console.log(Object.values(coordonnees[key])) -- OK
+						// ALL THE POINTS ARE WORKING HERE!
+						console.log(Object.values(coordonnees[key])[0])
+						console.log(Object.values(coordonnees[key])[1])
 
-						}
+						// console.log('[' + coordonnees[i].value.X + ', ' + coordonnees[i].value.Y + '], ')
+						// console.log(return '[' + coordonnees[i].X + ', ' + coordonnees[i].Y + '], ';)
+						var polyline = L.polyline([
+													// Seems like the following line does not give the coordinates back…
+													// Tried return function but does not work either…
+													Object.values(coordonnees[key])[0], Object.values(coordonnees[key])[1]
+												  ],
+												  {color: 'black', weight: 1, clickable: false}
+												 ).addTo(leafletMap);
 					}
-				)
+				//)
 
 				/* Failed attempt
 				var polyline = L.polyline([

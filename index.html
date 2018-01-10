@@ -1,7 +1,316 @@
-<!DOCTYPE html>
+<!--
+	VeloViz-V6-20180110-stable
+	http://blockbuilder.org/keikhcheung/4db1794dc57f8f41ac56b8a2f45dadfb
+	is the latest stable version.
+
+	This current page refers to
+	VeloViz-V7-20180110-Somalia
+	http://blockbuilder.org/keikhcheung/d553f0ee45dbcb0906067460a8f55a45
+	which contains problem of transforming coordates stored in var coordonnees for L.polyline (lines 258-301)
+	whilst the coordinates stored in var coordonnees seem to be visualised in Somalia instead of France.
+-->
+
+<!doctype html>
 <html>
+
+<head>
+	<title>VeloViz</title>
+	<meta charset="utf-8">
+
+	<style>
+		body {
+			font-size: 12px;
+		}
+		
+		text {
+			fill: white;
+		}
+		
+		svg {
+			position: relative;
+		}
+		
+		path {
+			fill: blue; //color of dots representing stations
+			fill-opacity: 1;
+		}
+		
+		path:hover {
+			fill: brown;
+			fill-opacity: .7;
+		}
+		
+		#map {
+			position: absolute;
+			height: 100%;
+			width: 100%;
+			background-color: #333;
+		}
+		.box {
+			background: none repeat scroll 0 0 rgba(0, 0, 0, 0.8);
+			border-radius: 6px;
+			box-sizing: border-box;
+			display: none;
+			padding: 10px;
+			display: block;
+			color: white;
+			}
+			
+		.box-title {
+			width: 100%;
+			font-weight: bold;
+			font-size: 150%;
+			border-bottom: 1px solid white;
+		}
+		
+		.right-box {
+			position: absolute;
+			right: 15px;
+			top: 15px;
+			min-width: 300px;
+			}
+	 </style>
+</head>
+
 <body>
-<h1>Hello World</h1>
-<p>I'm hosted with GitHub Pages.</p>
+	<div id="map"></div>
+	<div id="rightbox" class="box right-box"><div class="box-title">Informations</div></br><span style="font-style:italic;">Survolez une station</span></div> 
+		<svg xmlns="http://www.w3.org/2000/svg" width="100px" height="100px" />
+	</div>
+
+	<link 
+		rel="stylesheet" 
+		href="http://cdn.leafletjs.com/leaflet-0.7.2/leaflet.css" 
+	/>
+
+	<script src="http://d3js.org/d3.v4.min.js"></script>
+	<script src="http://cdn.leafletjs.com/leaflet-0.7.2/leaflet.js"></script>
+
+	<script>
+		// On definie une echelle de couleur
+		var color = d3.scaleQuantize()  
+					.range(["rgb(237,248,233)",
+							"rgb(186,228,179)",
+							"rgb(116,196,118)",
+							"rgb(49,163,84)",
+							"rgb(0,109,44)"]);
+
+		// Array containing coordinates of all journeys: station_out, station_in, station_out, station_in…
+		var journey_data = [];
+
+		//loading file with journeys
+		d3.json("./journeys.json", function(error, journeys){
+			// console.log(journeys[1002]); // station d'origine
+			// console.log(journeys[1001][0].station_in); // station de destination
+			// console.log(journeys[1001][0].nb_journeys_vectorised); //nbre de trajets   
+			
+			// Adjust colour range related to shown vairation scale
+			color.domain([0, 200]); // TO-BE-ADJUSTED!!!!!
+
+			//loading GeoJson file using D3
+			d3.json("./stations.json", function(error, stations) {
+			// console.log(stations.features[1].properties.idstation); //id de station
+				if (error) throw error;
+				 
+				var coordonnees = {}; //création d'un objet
+				//correspondance idstation et coordonnées 
+				stations.features.forEach( function(station) {
+					coordonnees[station.properties.idstation] = {X: station.properties.X, Y: station.properties.Y}
+					// console.log(coordonnees) -- OK
+				}); // temporary variable station; stations is still callable though
+
+				// console.log(stations) -- OK
+				// console.log(coordonnees) -- OK
+				//pour chaque station (stationOrig), regarde ds journeys les correspondantes 
+				stations.features.forEach( function(stationOrig) {
+					// console.log(stationOrig) -- OK
+					journeys[stationOrig.properties.idstation].forEach( function(stationDest) {
+						// console.log(stationDest) -- OK
+						/*
+						// Loading all journey data between stationOrig and stationDest
+						// but making computer hang
+						for (var stationDest in journeys) {
+							for (var stationOrig in journeys[stationDest]) {
+								console.log("Il y a eu " + (journeys[stationDest][stationOrig].nb_journeys_vectorised) + " voyages depuis la station " + stationOrig + " vers la station " + (journeys[stationDest][stationOrig].station_in));
+							}
+						}
+
+						*/
+
+						/*
+						console.log("Voyage depuis la station " + 
+							stationOrig.properties.idstation + 
+							"(coordonnées " + stationOrig.properties.X + 
+							"," + 
+							stationOrig.properties.Y + 
+							") vers la station " + 
+							stationDest.station_in + 
+							"(coordonnées " + 
+							coordonnees[stationDest.station_in].X + 
+							"," + 
+							coordonnees[stationDest.station_in].Y + 
+							")"  );            
+						-- OK
+						*/
+
+						/* Unnecessary as coordonnees can be used
+						journey_data.push('[' + stationOrig.properties.X + ', ' + stationOrig.properties.Y + ']');
+						journey_data.push('[' + coordonnees[stationDest.station_in].X + ', ' + coordonnees[stationDest.station_in].Y + ']');
+
+						console.log(journey_data)
+						*/
+
+						//tracing lines from stationOrig to stationDest
+						/* var trips = [
+							[stationOrig.properties.X,stationOrig.properties.Y],
+							[stationDest.properties.X,stationDest.properties.Y]              
+						];
+						*/
+						// var polyline = L.polyline(trips, {color: 'black'}).addTo(map);                
+					}); // temporary variable (stationDest)
+				}); // temporary variable (stationOrig)
+
+				var geoData = stations;
+				// console.log(stations); -- OK
+
+			
+				//Initializing Leaflet map and setting the view
+				var leafletMap = L.map('map').setView([45.7531152, 4.827906], 12);
+				
+				
+				//add choice base tiles - background map of Lyon
+				L.tileLayer('http://{s}.tile.stamen.com/toner-lite/{z}/{x}/{y}.png').addTo(leafletMap);
+				
+			
+				
+				//adds an SVG element to Leaflet’s overlay pane
+				var svg = d3.select(leafletMap.getPanes().overlayPane).append("svg");
+				
+						 
+				//G element added to translate the SVG elements so that the top-left corner of the SVG, ⟨0,0⟩, corresponds to Leaflet’s layer origin
+				var g = svg.append("g").attr("class", "leaflet-zoom-hide");
+				
+				// Use Leaflet to implement a D3 geometric transformation.
+				function projectPoint(x, y) {
+					var point = leafletMap.latLngToLayerPoint(new L.LatLng(y, x));
+					this.stream.point(point.x, point.y);
+				} // function projectPoint
+				
+				//Create a d3.geo.path to convert GeoJson to SVG
+				var transform = d3.geoTransform({point: projectPoint});
+				var path = d3.geoPath().projection(transform);
+				leafletMap.on('moveend', mapmove);
+				
+				 
+				
+				var div = d3.select("#rightbox");
+
+				redrawSubset(geoData.features);
+
+				function redrawSubset(subset) {
+					path.pointRadius(3); // * size of dots);
+
+					//D3 mechanism for fitting SVG to the layer
+					var bounds = path.bounds(stations);
+					var topLeft = bounds[0];
+					var bottomRight = bounds[1];
+
+
+					svg.attr("width", bottomRight[0] - topLeft[0])
+						.attr("height", bottomRight[1] - topLeft[1])
+						.style("left", topLeft[0] + "px")
+						.style("top", topLeft[1] + "px");
+
+
+					g.attr("transform", "translate(" + -topLeft[0] + "," + -topLeft[1] + ")");
+
+					//Create path elements for each of the features
+					var features = g.selectAll("path")
+						.data(stations.features)
+						.enter().append("path")
+						features.attr("d", path).attr("class", "points");
+						features.style("fill-opacity", function(d) {
+							var value = d.properties.idstation;	         
+							// console.log(d.properties.idstation.length);
+							if (d.group) {
+								return (d.group * 0.1) + 0.2
+							} // if dgroup	
+						}) //features.style
+						
+								//infobulle
+								.on('mousemove', function(d) {
+									 // console.log(d) // Check element to show: .properties.nom AND .properties.value         
+										var mouse = d3.mouse(svg.node()).map(function(d) {
+										// console.log(d)
+											return parseInt(d); 
+										}); // mapfunction d
+						
+											// Ajout des infos sur la stations basées sur le fichier geoJson
+											div.html('<div class="box-title">Informations</div></br>'+'Numéro de station : <span style="font-weight:bold;">'+d.properties.idstation + '</span><br/>Bornes : <span style="font-weight:bold;">'+ d.properties.BORNES +'</span><br/>Station : <span style="font-weight:bold;">'+d.properties.nom +'</span><br/>Commune : <span style="font-weight:bold;">'+ d.properties.commune);
+									}) //mousemove function
+								.on('mouseout', function() {
+									// tooltip.classed('hidden', true);
+								}); // mouseout	
+				} //function redrawsubwet
+
+				//console.log(coordonnees)
+
+				// Attempt L.polyline
+				var polyline = L.polyline(
+					function() {
+						for (var i = 0; i < coordonnees.length; i++) {
+							console.log('[' + coordonnees[i].value.X + ', ' + coordonnees[i].value.Y + '], ')
+							// console.log(return '[' + coordonnees[i].X + ', ' + coordonnees[i].Y + '], ';)
+
+						}
+					}
+				)
+
+				/* Failed attempt
+				var polyline = L.polyline([
+					for (var i = 0; i < journey_data.length; i+2) {
+						for (var j = i+1; j < journey_data.length; j+2) {
+							function() {
+								return '[' + parseFloat(i.value) + ', ' + parseFloat(j.value) + '], '
+							}
+						}
+					}
+				])
+				*/
+
+				/* Reference
+				var polyline = L.polyline([
+							[-41.286, 174.796],
+							[-41.281, 174.786],
+							[-41.279, 174.776],
+							[-41.290, 174.775],
+							[-41.292, 174.788]]
+							).addTo(map);
+
+				/* Failed attempt
+				var polyline = L.polyline([
+					for
+
+				stationOrig.properties.Y + 
+							") vers la station " + 
+							stationDest.station_in + 
+							"(coordonnées " + 
+							coordonnees[stationDest.station_in].X + 
+							"," + 
+							coordonnees[stationDest.station_in].Y + 
+				*/
+
+				// Redrawing the missing image tiles of map when panning?
+				function mapmove(e) {
+					//remove all points
+					d3.selectAll(".points").remove();
+					redrawSubset(geoData.features);
+				} // function mapmove
+
+			}) //json2   
+		}); //json1
+		
+	</script>
 </body>
+
 </html>

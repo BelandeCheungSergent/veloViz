@@ -1,13 +1,11 @@
 <!--
-	This current page refers to the latest stable version
+	This current page refers to the latest unstable version
+	VeloViz-V8-20180111-Lyon-journeys-only-once
+	http://blockbuilder.org/keikhcheung/d553f0ee45dbcb0906067460a8f55a45
+
+	The latest stable version is
 	VeloViz-V6-20180110-stable
 	http://blockbuilder.org/keikhcheung/4db1794dc57f8f41ac56b8a2f45dadfb
-
-	The latest version (unstable) is 
-	VeloViz-V7-20180110-Somalia
-	http://blockbuilder.org/keikhcheung/d553f0ee45dbcb0906067460a8f55a45
-	which contains problem of transforming coordates stored in var coordonnees for L.polyline (lines 257-319)
-	whilst the coordinates stored in var coordonnees seem to be visualised in Somalia instead of France.
 -->
 
 <!doctype html>
@@ -122,9 +120,12 @@
 				// console.log(stations) -- OK
 				// console.log(coordonnees) -- OK
 				//pour chaque station (stationOrig), regarde ds journeys les correspondantes 
-				stations.features.forEach( function(stationOrig) {
+
+
+				//1 MOVED BELOW in mouseover
+				//1 stations.features.forEach( function(stationOrig) {
 					// console.log(stationOrig) -- OK
-					journeys[stationOrig.properties.idstation].forEach( function(stationDest) {
+					//1 journeys[stationOrig.properties.idstation].forEach( function(stationDest) {
 						// console.log(stationDest) -- OK
 						/*
 						// Loading all journey data between stationOrig and stationDest
@@ -167,8 +168,8 @@
 						];
 						*/
 						// var polyline = L.polyline(trips, {color: 'black'}).addTo(map);                
-					}); // temporary variable (stationDest)
-				}); // temporary variable (stationOrig)
+					//1 }); // temporary variable (stationDest)
+				//1 }); // temporary variable (stationOrig)
 
 				var geoData = stations;
 				// console.log(stations); -- OK
@@ -181,7 +182,21 @@
 				//add choice base tiles - background map of Lyon
 				L.tileLayer('http://{s}.tile.stamen.com/toner-lite/{z}/{x}/{y}.png').addTo(leafletMap);
 
-				
+				// LINES for journeys
+				var trajets = L.layerGroup().addTo(leafletMap);
+				//stations.features.forEach( function(stationOrig) {
+				//	journeys[stationOrig.properties.idstation].forEach( function(stationDest) {
+				//		//console.log(stationDest)
+				//		var trips = [
+				//			[stationOrig.properties.X,stationOrig.properties.Y],
+				//			[coordonnees[stationDest.station_in].X, coordonnees[stationDest.station_in].Y]];
+				//		console.log(trips);
+				//		var polyline = L.polyline(trips, {color: 'black'}).addTo(leafletMap);                
+				//		console.log("Adding polyline");
+				//	}); // (stationDest)
+				//}); // (stationOrig)
+
+
 				//adds an SVG element to Leaflet’s overlay pane
 				var svg = d3.select(leafletMap.getPanes().overlayPane).append("svg");
 				
@@ -244,17 +259,33 @@
 											return parseInt(d); 
 										}); // mapfunction d
 						
-											// Ajout des infos sur la stations basées sur le fichier geoJson
-											div.html('<div class="box-title">Informations</div></br>'+'Numéro de station : <span style="font-weight:bold;">'+d.properties.idstation + '</span><br/>Bornes : <span style="font-weight:bold;">'+ d.properties.BORNES +'</span><br/>Station : <span style="font-weight:bold;">'+d.properties.nom +'</span><br/>Commune : <span style="font-weight:bold;">'+ d.properties.commune);
+										// Ajout des infos sur la stations basées sur le fichier geoJson
+										div.html('<div class="box-title">Informations</div></br>'+'Numéro de station : <span style="font-weight:bold;">'+d.properties.idstation + '</span><br/>Bornes : <span style="font-weight:bold;">'+ d.properties.BORNES +'</span><br/>Station : <span style="font-weight:bold;">'+d.properties.nom +'</span><br/>Commune : <span style="font-weight:bold;">'+ d.properties.commune);
+
+										// LINES for journeys
+										journeys[d.properties.idstation].forEach( function(stationDest) {
+											//console.log(stationDest)
+											if(stationDest.station_in) {
+												var trips = [
+													[d.properties.Y, d.properties.X],
+													[coordonnees[stationDest.station_in].Y, coordonnees[stationDest.station_in].X]];
+												var polyline = L.polyline(trips, {color: '#333', weight: stationDest.nb_journeys_vectorised * 0.1}).addTo(trajets);
+												console.log("adding polyline");
+											}
+										}); // (stationDest)
+										console.log("end");
+
 									}) //mousemove function
+								/* REMOVED for LINES for journeys
 								.on('mouseout', function() {
 									// tooltip.classed('hidden', true);
 								}); // mouseout	
+								*/
 				} //function redrawsubwet
 
 				//console.log(coordonnees)
 
-				/* DISABLE FOR SHOWING VELOV STATION DETAILS ON HOVERING IN INFOBOX
+				/* HIDDEN for LINES for journeys
 				// Attempt L.polyline with a single point -- OK but in Somalia…
 				var polyline = L.polyline([
 					[4.920604, 45.760813],
